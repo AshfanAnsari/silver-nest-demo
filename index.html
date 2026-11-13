@@ -210,129 +210,10 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between studio-backdrop">
 
-  <!-- TOP STUDIO CONTROL BAR -->
-  <header class="w-full bg-[#0E0E0E]/90 backdrop-blur-md border-b border-white/10 px-4 py-2.5 z-40">
-    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-      <!-- Left: Studio Identity & Live FPS Telemetry -->
-      <div class="flex items-center gap-3">
-        <div class="flex items-center gap-2">
-          <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-xs font-medium tracking-wider uppercase text-white/90">90FPS Push-Displacement Engine</span>
-        </div>
-        <div class="hidden sm:flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1 text-[11px] font-mono text-white/70">
-          <span id="telemetryFps" class="text-emerald-400 font-semibold">LOCKED EDGE PUSH</span>
-          <span class="text-white/25">|</span>
-          <span id="telemetryFrame">FRAME 0090 / 1785</span>
-          <span class="text-white/25">|</span>
-          <span id="telemetryStateName" class="text-amber-200/90">State 01: Trinity Verticals</span>
-        </div>
-      </div>
-
-      <!-- Center: Choreography State Pills -->
-      <div class="flex items-center gap-1 bg-black/50 p-1 rounded-full border border-white/10 overflow-x-auto max-w-full">
-        <button id="btnPlayPause" class="px-2.5 py-1 rounded-full text-xs font-medium bg-white text-black hover:bg-white/90 transition flex items-center gap-1.5" title="Play/Pause Choreography Loop">
-          <span id="playPauseIcon">❚❚</span>
-          <span id="playPauseLabel" class="hidden md:inline">Auto-Glide</span>
-        </button>
-        <div class="h-3.5 w-[1px] bg-white/15 mx-0.5"></div>
-        <div id="statePillsContainer" class="flex items-center gap-1">
-          <!-- Populated dynamically -->
-        </div>
-      </div>
-
-      <!-- Right: Mode Toggle, Physics Drawer, Code Export -->
-      <div class="flex items-center gap-2">
-        <button id="btnViewportMode" class="px-2.5 py-1 rounded-full text-xs border border-white/15 bg-white/5 hover:bg-white/10 text-white/85 transition" title="Switch between Reference Tablet Frame and Fullscreen Web Hero">
-          <span id="viewportModeLabel">Full Hero View</span>
-        </button>
-        <button id="btnToggleStudio" class="px-2.5 py-1 rounded-full text-xs border border-amber-300/30 bg-amber-200/10 hover:bg-amber-200/20 text-amber-100 transition">
-          Customize &amp; Physics
-        </button>
-        <button id="btnExportCode" class="px-2.5 py-1 rounded-full text-xs bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium transition">
-          Get Code
-        </button>
-      </div>
-    </div>
-  </header>
 
   <!-- MAIN STAGE CONTAINER -->
   <main class="flex-1 flex flex-col items-center justify-center relative px-2 py-3 overflow-hidden">
 
-    <!-- COLLAPSIBLE CLIENT CUSTOMIZER & PHYSICS DRAWER -->
-    <aside id="studioPanel" class="hidden fixed right-4 top-16 w-80 sm:w-96 bg-[#121212]/95 backdrop-blur-xl border border-white/15 rounded-2xl p-4 shadow-2xl z-50 text-xs space-y-4 max-h-[82vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-        <div>
-          <h3 class="text-sm font-semibold text-white">Liquid Push Physics &amp; Brand</h3>
-          <p class="text-[11px] text-white/50">Shared boundaries push in lockstep with zero overlap</p>
-        </div>
-        <button id="btnCloseStudio" class="w-7 h-7 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-white/70">✕</button>
-      </div>
-
-      <!-- Brand Preset Selector -->
-      <div class="space-y-1.5">
-        <label class="text-white/70 font-medium block">Client Brand Preset</label>
-        <div class="grid grid-cols-3 gap-1.5">
-          <button data-preset="silvernest" class="brand-preset-btn px-2 py-1.5 rounded-lg bg-white text-black font-medium text-center transition">SILVER NEST</button>
-          <button data-preset="silvernestshort" class="brand-preset-btn px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-center transition">SILVER NEST · SHORT</button>
-          <button data-preset="shilpa" class="brand-preset-btn px-2 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-center transition">BY SHILPA CHAWLA</button>
-        </div>
-      </div>
-
-      <!-- Brand Name & Tagline Inputs -->
-      <div class="space-y-2">
-        <div>
-          <label class="text-white/60 block mb-1">Brand Logo Text</label>
-          <input id="inputBrandName" type="text" value="THE SILVER NEST" class="w-full bg-black/60 border border-white/15 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-white/40" />
-        </div>
-        <div>
-          <label class="text-white/60 block mb-1">Hero Footer Description</label>
-          <textarea id="inputBrandDesc" rows="2" class="w-full bg-black/60 border border-white/15 rounded-lg px-2.5 py-1.5 text-white focus:outline-none focus:border-white/40">The Silver Nest by Shilpa Chawla — authentic 925 sterling silver, crafted to sparkle and made to last, shipped across India.</textarea>
-        </div>
-      </div>
-
-      <!-- Physics Sliders -->
-      <div class="space-y-3 border-t border-white/10 pt-3">
-        <div>
-          <div class="flex justify-between mb-1">
-            <span class="text-white/70">Push Transition Duration</span>
-            <span id="valDuration" class="font-mono text-amber-200">1150ms (103 frames @ 90fps)</span>
-          </div>
-          <input id="sliderDuration" type="range" min="500" max="2000" step="50" value="1150" class="w-full accent-white" />
-        </div>
-
-        <div>
-          <label class="text-white/70 block mb-1">Liquid Easing Curve</label>
-          <select id="selectEasing" class="w-full bg-black/60 border border-white/15 rounded-lg px-2.5 py-1.5 text-white">
-            <option value="cubic-bezier(0.22, 1, 0.36, 1)">Liquid Silk — cubic-bezier(0.22, 1, 0.36, 1) [Video Exact]</option>
-            <option value="cubic-bezier(0.16, 1, 0.3, 1)">Ultra-Damped Expo — cubic-bezier(0.16, 1, 0.3, 1)</option>
-            <option value="cubic-bezier(0.34, 1.18, 0.64, 1)">Elastic Push Spring — cubic-bezier(0.34, 1.18, 0.64, 1)</option>
-            <option value="cubic-bezier(0.65, 0, 0.35, 1)">Symmetrical Smooth — cubic-bezier(0.65, 0, 0.35, 1)</option>
-          </select>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <div class="flex justify-between mb-1">
-              <span class="text-white/70">Bento Gap</span>
-              <span id="valGap" class="font-mono text-white/90">12px</span>
-            </div>
-            <input id="sliderGap" type="range" min="4" max="24" step="2" value="12" class="w-full accent-white" />
-          </div>
-          <div>
-            <div class="flex justify-between mb-1">
-              <span class="text-white/70">Corner Radius</span>
-              <span id="valRadius" class="font-mono text-white/90">20px</span>
-            </div>
-            <input id="sliderRadius" type="range" min="0" max="32" step="2" value="20" class="w-full accent-white" />
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between pt-1">
-          <span class="text-white/70">Strict Lockstep Push (0ms overlap)</span>
-          <input id="toggleStagger" type="checkbox" checked class="w-4 h-4 accent-white rounded" />
-        </div>
-      </div>
-    </aside>
 
     <!-- THE HERO SHELL -->
     <div id="heroShell" class="hero-shell mode-tablet flex flex-col justify-between relative">
@@ -514,14 +395,6 @@
 
     </div>
 
-    <!-- BOTTOM 90FPS CONTINUOUS PUSH SCRUBBER BAR -->
-    <div class="w-full max-w-[1080px] mt-3 px-3">
-      <div class="bg-[#111111]/90 backdrop-blur-md border border-white/10 rounded-xl px-3.5 py-2 flex items-center gap-3">
-        <span class="text-[11px] font-mono text-white/60 shrink-0" id="timeReadout">01.00s / 19.83s</span>
-        <input id="timelineScrubber" type="range" min="0" max="1785" value="90" class="w-full accent-white cursor-pointer h-1.5 bg-white/15 rounded-lg" />
-        <span class="text-[11px] font-mono text-amber-200/80 shrink-0 hidden sm:inline" id="easingReadout">Zero-Overlap Push</span>
-      </div>
-    </div>
 
   </main>
 
@@ -562,55 +435,6 @@
     </div>
   </div>
 
-  <!-- MODAL 2: PRODUCTION CODE & 90FPS CHOREOGRAPHY SPEC MODAL -->
-  <div id="codeModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-[#121212] border border-white/15 rounded-2xl max-w-3xl w-full p-5 shadow-2xl space-y-4 max-h-[86vh] flex flex-col">
-      <div class="flex items-center justify-between border-b border-white/10 pb-3">
-        <div>
-          <h3 class="text-base font-semibold text-white">90fps Lockstep Push-Displacement Spec &amp; Code</h3>
-          <p class="text-xs text-white/55">Every appearing tile physically pushes back the present ring tile along a shared locked boundary (zero overlap)</p>
-        </div>
-        <button id="btnCloseCodeModal" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center text-white/70">✕</button>
-      </div>
-
-      <div class="overflow-y-auto flex-1 space-y-3 pr-1 text-xs">
-        <div class="bg-white/5 border border-white/10 rounded-xl p-3 space-y-1.5">
-          <div class="font-semibold text-amber-200">How True Edge-to-Edge Push Displacement Works (Zero Overlap):</div>
-          <ul class="list-disc list-inside text-white/75 space-y-1">
-            <li><strong>Entry-Edge Pre-Staging:</strong> Before an appearing tile enters from the top, bottom, or right edge, it is pre-staged flush against the outer border (e.g., <code>top: -42.5%, height: 40.5%</code> or <code>left: 101.7%, width: 84.8%</code>) with <code>transition: none</code>.</li>
-            <li><strong>Synchronized Shared Boundary:</strong> On the next animation frame, both the appearing tile and the present ring tile animate with <code>0ms</code> relative delay and identical <code>cubic-bezier(0.22, 1, 0.36, 1)</code> easing. Because <code>Appearing_Edge(t) + Gap === Present_Ring_Edge(t)</code> for all <code>t ∈ [0, 1]</code>, the appearing tile physically pushes and compresses the ring tile back instead of overlapping it.</li>
-          </ul>
-        </div>
-
-        <pre id="exportCodeBlock" class="bg-black/80 border border-white/10 rounded-xl p-3.5 font-mono text-[11px] text-emerald-300 overflow-x-auto leading-relaxed"><code>/* Lockstep Push Displacement Rule:
-   Appearing tile and present ring tile share an exact moving boundary:
-   Right-to-Left Push: appearing.left(t) - present.right(t) = 1.7% (constant gap)
-   Top-to-Bottom Push: present.top(t) - appearing.bottom(t) = 2.5% (constant gap) */
-function pushTransition(stage, fromState, toState) {
-  // 1. Pre-stage newly entering tiles flush against the entry edge with no transition
-  enteringTiles.forEach(tile => {
-    tile.classList.add('no-transition');
-    setRect(tile, fromState[tile.id]);
-  });
-  stage.offsetHeight; // Force reflow
-
-  // 2. Animate both appearing and pushed tiles in lockstep (0ms delay difference)
-  allTiles.forEach(tile => {
-    tile.classList.remove('no-transition');
-    tile.style.transitionDelay = '0ms';
-    setRect(tile, toState[tile.id]);
-  });
-}</code></pre>
-      </div>
-
-      <div class="flex items-center justify-between pt-2 border-t border-white/10">
-        <span id="copyConfirmMsg" class="text-xs text-emerald-400 opacity-0 transition">Copied snippet to clipboard!</span>
-        <button id="btnCopyCode" class="bg-white text-black px-4 py-2 rounded-full text-xs font-semibold hover:bg-white/90 transition">
-          Copy CSS &amp; Matrix Config
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- MODAL 3: VIP CLIENT CONSULTATION / CONNECT MODAL -->
   <div id="connectModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
@@ -1210,25 +1034,6 @@ function pushTransition(stage, fromState, toState) {
 
       if (playAudio) playLuxurySound('glide');
 
-      // Update state pills
-      document.querySelectorAll('.state-pill-btn').forEach((btn, i) => {
-        if (i === currentStateIndex) {
-          btn.className = 'state-pill-btn px-2 py-0.5 rounded-full text-[11px] font-mono bg-amber-200 text-black font-semibold transition';
-        } else {
-          btn.className = 'state-pill-btn px-2 py-0.5 rounded-full text-[11px] font-mono text-white/60 hover:text-white hover:bg-white/10 transition';
-        }
-      });
-
-      // Update Telemetry & Scrubber
-      const telemetryState = document.getElementById('telemetryStateName');
-      const telemetryFrame = document.getElementById('telemetryFrame');
-      const timeReadout = document.getElementById('timeReadout');
-      const scrubber = document.getElementById('timelineScrubber');
-
-      if (telemetryState) telemetryState.textContent = state.name;
-      if (telemetryFrame) telemetryFrame.textContent = `FRAME ${String(state.frameStart).padStart(4, '0')} / 1785`;
-      if (timeReadout) timeReadout.textContent = `${(state.frameStart / 90).toFixed(2)}s / 19.83s`;
-      if (scrubber) scrubber.value = state.frameStart;
 
       // STEP A: If we jumped non-sequentially OR looped around, instantly pre-stage any tile that was off-screen
       // to its exact pre-push entry boundary from prevState with `no-transition` so it pushes cleanly instead of crossing over!
@@ -1292,184 +1097,9 @@ function pushTransition(stage, fromState, toState) {
       }
     }
 
-    // Continuous 90fps Scrubber Interpolation (scrub any frame 0..1785 and watch exact lockstep push!)
-    function scrubToFrame(frame) {
-      let sIdx = 0;
-      for (let i = CHOREOGRAPHY_STATES.length - 1; i >= 0; i--) {
-        if (frame >= CHOREOGRAPHY_STATES[i].frameStart) {
-          sIdx = i;
-          break;
-        }
-      }
-      const nextIdx = Math.min(CHOREOGRAPHY_STATES.length - 1, sIdx + 1);
-      const stateA = CHOREOGRAPHY_STATES[sIdx];
-      const stateB = CHOREOGRAPHY_STATES[nextIdx];
 
-      const spanFrames = Math.max(1, (stateB.frameStart - stateA.frameStart) || 135);
-      // Transition happens across the first 65% of the state interval, then holds
-      const rawP = Math.min(1, Math.max(0, (frame - stateA.frameStart) / (spanFrames * 0.65)));
-      // Smooth cubic-bezier(0.22, 1, 0.36, 1) approximation for manual scrubbing
-      const p = 1 - Math.pow(1 - rawP, 3.2);
 
-      ALL_TILES.forEach((tileId) => {
-        const el = document.getElementById(tileId);
-        if (!el) return;
-        const a = stateA.layout[tileId];
-        const b = stateB.layout[tileId];
-        el.classList.add('no-transition');
-        const l = a.l + (b.l - a.l) * p;
-        const t = a.t + (b.t - a.t) * p;
-        const w = a.w + (b.w - a.w) * p;
-        const h = a.h + (b.h - a.h) * p;
-        const s = a.s + (b.s - a.s) * p;
-        const o = (a.o > 0 || b.o > 0) ? 1 : 0;
-        setTileRect(el, { l, t, w, h, o, s });
-      });
-
-      currentStateIndex = rawP > 0.5 ? nextIdx : sIdx;
-      const activeState = CHOREOGRAPHY_STATES[currentStateIndex];
-      document.getElementById('telemetryStateName').textContent = activeState.name;
-      document.getElementById('telemetryFrame').textContent = `FRAME ${String(frame).padStart(4, '0')} / 1785`;
-      document.getElementById('timeReadout').textContent = `${(frame / 90).toFixed(2)}s / 19.83s`;
-
-      document.querySelectorAll('.state-pill-btn').forEach((btn, i) => {
-        btn.className = (i === currentStateIndex)
-          ? 'state-pill-btn px-2 py-0.5 rounded-full text-[11px] font-mono bg-amber-200 text-black font-semibold transition'
-          : 'state-pill-btn px-2 py-0.5 rounded-full text-[11px] font-mono text-white/60 hover:text-white hover:bg-white/10 transition';
-      });
-    }
-
-    // Build State Pills (00 .. 10)
-    const pillsContainer = document.getElementById('statePillsContainer');
-    CHOREOGRAPHY_STATES.forEach((st, idx) => {
-      const btn = document.createElement('button');
-      btn.textContent = st.code;
-      btn.title = st.name;
-      btn.className = 'state-pill-btn px-2 py-0.5 rounded-full text-[11px] font-mono text-white/60 hover:text-white transition';
-      btn.addEventListener('click', () => {
-        playLuxurySound('tap');
-        applyChoreographyState(idx, true);
-      });
-      pillsContainer.appendChild(btn);
-    });
-
-    // Play / Pause Button
-    const btnPlayPause = document.getElementById('btnPlayPause');
-    btnPlayPause.addEventListener('click', () => {
-      playLuxurySound('tap');
-      isPlaying = !isPlaying;
-      document.getElementById('playPauseIcon').textContent = isPlaying ? '❚❚' : '▶';
-      document.getElementById('playPauseLabel').textContent = isPlaying ? 'Auto-Glide' : 'Paused';
-      if (isPlaying) {
-        applyChoreographyState(nextStateIndex(currentStateIndex), true);
-      } else if (stateTimer) {
-        clearTimeout(stateTimer);
-      }
-    });
-
-    // Scrubber Input
-    const timelineScrubber = document.getElementById('timelineScrubber');
-    timelineScrubber.addEventListener('input', (e) => {
-      const frame = parseInt(e.target.value, 10);
-      isPlaying = false;
-      document.getElementById('playPauseIcon').textContent = '▶';
-      document.getElementById('playPauseLabel').textContent = 'Paused';
-      if (stateTimer) clearTimeout(stateTimer);
-      scrubToFrame(frame);
-    });
-
-    // =========================================================================
-    // 5. LIVE CUSTOMIZER, VIEWPORT MODE & INTERACTIVE MODALS
-    // =========================================================================
-    const heroShell = document.getElementById('heroShell');
-    const btnViewportMode = document.getElementById('btnViewportMode');
-    let isFullscreenHero = false;
-
-    btnViewportMode.addEventListener('click', () => {
-      playLuxurySound('tap');
-      isFullscreenHero = !isFullscreenHero;
-      heroShell.classList.toggle('mode-tablet', !isFullscreenHero);
-      heroShell.classList.toggle('mode-fullscreen', isFullscreenHero);
-      document.getElementById('viewportModeLabel').textContent = isFullscreenHero ? 'Tablet Frame View' : 'Full Hero View';
-    });
-
-    const studioPanel = document.getElementById('studioPanel');
-    document.getElementById('btnToggleStudio').addEventListener('click', () => {
-      playLuxurySound('tap');
-      studioPanel.classList.toggle('hidden');
-    });
-    document.getElementById('btnCloseStudio').addEventListener('click', () => {
-      playLuxurySound('tap');
-      studioPanel.classList.add('hidden');
-    });
-
-    const BRAND_PRESETS = {
-      silvernest: {
-        name: 'THE SILVER NEST',
-        desc: 'The Silver Nest by Shilpa Chawla — authentic 925 sterling silver, crafted to sparkle and made to last, shipped across India.'
-      },
-      silvernestshort: {
-        name: 'SILVER NEST',
-        desc: 'Silver Nest — hallmarked 925 sterling silver rings set with Swarovski stones, from Delhi, made for every day.'
-      },
-      shilpa: {
-        name: 'THE SILVER NEST BY SHILPA CHAWLA',
-        desc: 'The Silver Nest by Shilpa Chawla — every piece I design carries a piece of my heart, made to celebrate the one who wears it.'
-      }
-    };
-
-    document.querySelectorAll('.brand-preset-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        playLuxurySound('tap');
-        const key = btn.getAttribute('data-preset');
-        const preset = BRAND_PRESETS[key];
-        if (!preset) return;
-        document.getElementById('inputBrandName').value = preset.name;
-        document.getElementById('inputBrandDesc').value = preset.desc;
-        document.querySelectorAll('.brand-name-target').forEach(el => el.textContent = preset.name);
-        document.getElementById('brandDescTarget').textContent = preset.desc;
-      });
-    });
-
-    document.getElementById('inputBrandName').addEventListener('input', (e) => {
-      const val = e.target.value || 'THE SILVER NEST';
-      document.querySelectorAll('.brand-name-target').forEach(el => el.textContent = val);
-    });
-
-    document.getElementById('inputBrandDesc').addEventListener('input', (e) => {
-      document.getElementById('brandDescTarget').textContent = e.target.value;
-    });
-
-    document.getElementById('sliderDuration').addEventListener('input', (e) => {
-      const ms = parseInt(e.target.value, 10);
-      document.documentElement.style.setProperty('--glide-duration', `${ms}ms`);
-      const frames90 = Math.round((ms / 1000) * 90);
-      document.getElementById('valDuration').textContent = `${ms}ms (${frames90} frames @ 90fps)`;
-    });
-
-    document.getElementById('selectEasing').addEventListener('change', (e) => {
-      const curve = e.target.value;
-      document.documentElement.style.setProperty('--glide-easing', curve);
-      document.getElementById('easingReadout').textContent = curve;
-    });
-
-    document.getElementById('sliderGap').addEventListener('input', (e) => {
-      const px = parseInt(e.target.value, 10);
-      document.getElementById('valGap').textContent = `${px}px`;
-      document.getElementById('bentoStage').style.padding = `${Math.max(0, px - 10)}px`;
-    });
-
-    document.getElementById('sliderRadius').addEventListener('input', (e) => {
-      const px = parseInt(e.target.value, 10);
-      document.documentElement.style.setProperty('--tile-radius', `${px}px`);
-      document.getElementById('valRadius').textContent = `${px}px`;
-    });
-
-    document.getElementById('toggleStagger').addEventListener('change', (e) => {
-      lockstepPush = e.target.checked;
-    });
-
-    document.getElementById('btnSoundToggle').addEventListener('click', () => {
+document.getElementById('btnSoundToggle').addEventListener('click', () => {
       soundEnabled = !soundEnabled;
       document.getElementById('soundIcon').textContent = soundEnabled ? '♪' : '✕';
       if (soundEnabled) playLuxurySound('tap');
@@ -1551,48 +1181,11 @@ function pushTransition(stage, fromState, toState) {
       showToast(`Order request noted for ${name} — DM @silver_nest02 to confirm.`);
     });
 
-    const codeModal = document.getElementById('codeModal');
-    document.getElementById('btnExportCode').addEventListener('click', () => {
-      playLuxurySound('tap');
-      codeModal.classList.remove('hidden');
-    });
-    document.getElementById('btnCloseCodeModal').addEventListener('click', () => {
-      playLuxurySound('tap');
-      codeModal.classList.add('hidden');
-    });
-    document.getElementById('btnCopyCode').addEventListener('click', () => {
-      playLuxurySound('tap');
-      const codeText = document.getElementById('exportCodeBlock').innerText;
-      const ta = document.createElement('textarea');
-      ta.value = codeText;
-      document.body.appendChild(ta);
-      ta.select();
-      try { document.execCommand('copy'); } catch (e) {}
-      ta.remove();
-      const msg = document.getElementById('copyConfirmMsg');
-      msg.style.opacity = '1';
-      setTimeout(() => { msg.style.opacity = '0'; }, 2200);
-    });
 
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'ArrowRight') {
-        isPlaying = false;
-        document.getElementById('playPauseIcon').textContent = '▶';
-        applyChoreographyState(nextStateIndex(currentStateIndex), true);
-      } else if (e.key === 'ArrowLeft') {
-        isPlaying = false;
-        document.getElementById('playPauseIcon').textContent = '▶';
-        applyChoreographyState(currentStateIndex - 1, true);
-      } else if (e.key === ' ') {
-        e.preventDefault();
-        btnPlayPause.click();
-      }
-    });
 
     // Boot: land instantly on State 01 (the Trinity mosaic) — the site must open on the full
     // three-column hero, never on State 00's near-empty staging frame (seed tile alone on black).
-    // State 00 remains only as State 01's pre-stage inside the engine and via its state pill.
+    // State 00 remains only as State 01's pre-stage inside the engine.
     applyChoreographyState(1, false, true);
   </script>
 </body>
