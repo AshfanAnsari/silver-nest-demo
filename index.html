@@ -164,6 +164,9 @@
       filter: blur(0px);
     }
 
+    /* Kinetic text must vanish fast when its tile narrows — no staggered fade-out,
+       otherwise half-words hang in the crushed strip (user-reported frame defect, 2026-11-14) */
+    .bento-tile:not(.kinetic-active) .kinetic-char { transition-duration: 140ms !important; transition-delay: 0ms !important; }
     /* Click Ripple Effect */
     .tap-ripple {
       position: fixed;
@@ -1320,6 +1323,7 @@
 
     let currentStateIndex = 1;
     let isPlaying = true;
+    let bootHold = true; // first cycle only: the opening mosaic holds an extra 2.2s so the first impression settles before the first push
     // Loop seam: State 00 is a staging state only. The cycle runs 01..10 and wraps 10 -> 01,
     // so State 00 serves as State 01's pre-stage (columns parked flush below the stage).
     function nextStateIndex(i) { return i === CHOREOGRAPHY_STATES.length - 1 ? 1 : i + 1; }
@@ -1404,9 +1408,10 @@
       if (stateTimer) clearTimeout(stateTimer);
       if (isPlaying) {
         stateTimer = setTimeout(() => {
+          bootHold = false;
           const nextIdx = nextStateIndex(currentStateIndex);
           applyChoreographyState(nextIdx, false);
-        }, state.durationMs);
+        }, state.durationMs + (bootHold ? 2200 : 0));
       }
     }
 
