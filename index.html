@@ -49,13 +49,21 @@
   #tileC{left:69%;top:0;width:31%;height:100%}
   #tileD{left:69%;top:0;width:31%;height:44%}
   #tileE{left:69%;top:52%;width:31%;height:48%}
+  /* partition z-order: sweeps cover in DOM order of the morph — D over everything,
+     C over E (C wipes to reveal E, grows back over it), E over A/B/T */
+  #tileA{z-index:1}
+  #tileB{z-index:2}
+  #tileT{z-index:2}
+  #tileE{z-index:3}
+  #tileC{z-index:4}
+  #tileD{z-index:6}
   #tileA .inner{top:-27%}
   #tileA .inner img{object-position:50% 40%}
   #tileB .inner img{object-position:50% 50%}
   #tileC .inner img{object-position:58% 55%}
   #tileD .inner img{object-position:50% 50%}
   #tileD .inner2{opacity:0}
-  #tileD .inner2 img{object-position:50% 62%}
+  #tileD .inner2 img{object-position:50% 62%;filter:brightness(.62)}
   #tileE .inner img{object-position:38% 55%}
   /* ---------- 2.5D floating pieces (beat-3 top row): piece + shadow + sparkle layers ---------- */
   .pieces{position:absolute;inset:0;opacity:0;pointer-events:none}
@@ -182,9 +190,10 @@
   var inner = function(id){ return document.querySelector(id + ' .inner'); };
   var M = 'power2.inOut';
 
-  /* initial states for tiles that enter later */
-  gsap.set('#tileD', { opacity: 0, scale: 0.96 });
-  gsap.set('#tileE', { opacity: 0 });
+  /* initial states: D starts collapsed to zero height (it GROWS into the split —
+     no tile ever fades; the mosaic is a partition at every frame, like the pin).
+     E starts exactly under C at C's beat-2 rect, fully opaque, hidden by C itself. */
+  gsap.set('#tileD', { height: '0%' });
   gsap.set('#tileT', { opacity: 0, y: 14, clipPath: 'inset(0 0 100% 0)' });
   gsap.set('.t-line', { opacity: 0, y: 14 });
   gsap.set('.pieces', { opacity: 0 });
@@ -192,12 +201,15 @@
   gsap.set('#p2', { y: 30, rotation: 3 });
   gsap.set('#p3', { y: 30, rotation: -3 });
 
-  /* ---------- the loop: 14.2s, repeats forever, end state == start state ---------- */
+  /* ---------- the loop: 16.3s, repeats forever, end state == start state.
+     Every morph runs on ONE clock: all geometry tweens in a beat share the same
+     start, duration and ease, so both sides move as a single gesture (the pin's
+     grammar). No photo tile ever fades — tiles only resize, wipe and cover. --- */
   var loop = gsap.timeline({
     paused: true, repeat: -1, defaults: { ease: 'none' },
     onUpdate: function(){
       var t = loop.time();
-      var beat = t < 2.2 ? 1 : (t < 6.2 ? 2 : (t < 11.7 ? 3 : 1));
+      var beat = t < 2.2 ? 1 : (t < 6.4 ? 2 : (t < 12.2 ? 3 : 1));
       [1,2,3].forEach(function(n){ document.getElementById('dot'+n).classList.toggle('on', n === beat); });
     }
   });
@@ -207,73 +219,95 @@
       .fromTo(inner('#tileB'), { scale: 1 }, { scale: 1.025, transformOrigin: '50% 38%', duration: 2.2 }, 0)
       .fromTo(inner('#tileC'), { xPercent: 0 }, { xPercent: 1.4, duration: 2.2 }, 0);
 
-  /* Beat 2 morph · 2.2–4.4 — CENTRE TILE GETS NO TWEEN (the measured hold) */
-  loop.to('#tileA', { height: '58%', duration: 2.2, ease: M }, 2.2)
-      .to('#tileC', { top: '52%', height: '48%', duration: 2.2, ease: M }, 2.2)
-      .to(inner('#tileA'), { yPercent: 2.2, duration: 2.2, ease: M }, 2.2)
-      .to(inner('#tileC'), { scale: 1.07, transformOrigin: '50% 60%', duration: 2.2, ease: M }, 2.2)
-      .to('#tileD', { opacity: 1, scale: 1, duration: 1.75, ease: M }, 2.65)
-      .fromTo(inner('#tileD'), { scale: 1.14 }, { scale: 1, transformOrigin: '50% 45%', duration: 1.75, ease: M, immediateRender: false }, 2.65)
-      .to('#tileT', { opacity: 1, duration: 0.25 }, 3.55)
-      .fromTo('#tileT', { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.85, ease: M, immediateRender: false }, 3.55)
-      .to('#tileT', { y: 0, duration: 0.85, ease: M }, 3.55)
-      .to('.t-line', { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out' }, 3.65);
+  /* Beat 2 morph · 2.2–4.6 — ONE clock for the whole mosaic.
+     CENTRE TILE GETS NO TWEEN (the measured hold). The right column SPLITS:
+     D grows down from the top while C slides down out of its way — D's bottom
+     edge (44p) and C's top edge (52p) move in lockstep, so the only thing
+     between them is the gutter, never another picture showing through. */
+  loop.to('#tileA', { height: '58%', duration: 2.4, ease: M }, 2.2)
+      .to('#tileC', { top: '52%', height: '48%', duration: 2.4, ease: M }, 2.2)
+      .to('#tileD', { height: '44%', duration: 2.4, ease: M }, 2.2)
+      .to(inner('#tileA'), { yPercent: 2.2, duration: 2.4, ease: M }, 2.2)
+      .to(inner('#tileC'), { scale: 1.07, transformOrigin: '50% 60%', duration: 2.4, ease: M }, 2.2)
+      .fromTo(inner('#tileD'), { scale: 1.14 }, { scale: 1, transformOrigin: '50% 45%', duration: 2.4, ease: M, immediateRender: false }, 2.2)
+      .to('#tileT', { opacity: 1, duration: 0.25 }, 3.75)
+      .fromTo('#tileT', { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.85, ease: M, immediateRender: false }, 3.75)
+      .to('#tileT', { y: 0, duration: 0.85, ease: M }, 3.75)
+      .to('.t-line', { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out' }, 3.85);
 
-  /* Beat 2 hold · 4.4–6.2 — layout static, side tiles micro-zoom; centre still frozen */
-  loop.to(inner('#tileA'), { scale: 1.03, duration: 1.8 }, 4.4)
-      .to(inner('#tileD'), { scale: 1.03, duration: 1.8 }, 4.4);
+  /* Beat 2 hold · 4.6–6.4 — layout static, side tiles micro-zoom; centre still frozen */
+  loop.to(inner('#tileA'), { scale: 1.03, duration: 1.8 }, 4.6)
+      .to(inner('#tileD'), { scale: 1.03, duration: 1.8 }, 4.6);
 
-  /* Beat 3 morph · 6.2–8.7 — D and E expand OVER the beat-2 tiles (full coverage),
-     the covered tiles only fade out at the very end, underneath: the stage is never empty */
-  loop.to('#tileD', { left: '0%', width: '100%', height: '38%', duration: 2.5, ease: M }, 6.2)
-      .to('#tileE', { opacity: 1, duration: 0.5 }, 6.2)
-      .to('#tileE', { left: '0%', top: '46%', width: '100%', height: '54%', duration: 2.5, ease: M }, 6.2)
-      .fromTo(inner('#tileE'), { xPercent: 2, scale: 1.01 }, { xPercent: -6, scale: 1.05, transformOrigin: '50% 50%', duration: 2.5, immediateRender: false }, 6.2)
-      .to(inner('#tileD'), { scale: 1.05, duration: 2.5, ease: M }, 6.2)
-      /* mid-morph the split photo crossfades to the velvet backdrop (the pin's beat-3 top image);
-         the cut pieces then drop in over it, staggered */
-      .to('#tileD .inner:not(.inner2)', { opacity: 0, duration: 1.1, ease: 'power1.inOut' }, 6.9)
-      .to('#tileD .inner2', { opacity: 0.55, duration: 1.1, ease: 'power1.inOut' }, 6.9)
-      .to('.pieces', { opacity: 1, duration: 0.8 }, 7.6)
-      .to('#p1', { y: 0, rotation: 2, duration: 2.0, ease: M }, 6.5)
-      .to('#p2', { y: 0, rotation: -2, duration: 2.0, ease: M }, 6.8)
-      .to('#p3', { y: 0, rotation: 3, duration: 2.0, ease: M }, 7.1)
-      .to(['#tileA', '#tileB', '#tileC', '#tileT'], { opacity: 0, duration: 0.35, ease: 'power1.in' }, 8.35)
-      .to(inner('#tileB'), { scale: 1, duration: 0.4 }, 8.35); /* reset B while invisible, for a clean loop seam */
+  /* Beat 3 morph · 6.4–9.0 — ONE clock. D sweeps left into the top row and E
+     sweeps left into the bottom row, both fully opaque, covering as they go.
+     C wipes away to reveal E beneath it; A and B collapse into the gutter line
+     on the same clock — no picture ever sits behind a moving tile, and nothing
+     pops out at the end. */
+  loop.to('#tileD', { left: '0%', width: '100%', height: '38%', duration: 2.6, ease: M }, 6.4)
+      .to('#tileE', { left: '0%', top: '46%', width: '100%', height: '54%', duration: 2.6, ease: M }, 6.4)
+      .to('#tileC', { width: '0%', duration: 2.6, ease: M }, 6.4)
+      .to('#tileB', { top: '46%', height: '0%', duration: 2.6, ease: M }, 6.4)
+      .to('#tileA', { height: '0%', duration: 2.6, ease: M }, 6.4)
+      .to('#tileT', { opacity: 0, duration: 0.45, ease: 'power1.in' }, 6.4)
+      .fromTo(inner('#tileE'), { xPercent: 2, scale: 1.01 }, { xPercent: -6, scale: 1.05, transformOrigin: '50% 50%', duration: 2.6, ease: M, immediateRender: false }, 6.4)
+      .to(inner('#tileD'), { scale: 1.05, duration: 2.6, ease: M }, 6.4)
+      /* mid-morph the split photo dissolves to the velvet backdrop (the pin's
+         beat-3 top image) at full opacity — the dimming is brightness on the
+         photo itself, never transparency, so the tile can't look ghosted */
+      .to('#tileD .inner:not(.inner2)', { opacity: 0, duration: 0.8, ease: 'power1.inOut' }, 7.4)
+      .to('#tileD .inner2', { opacity: 1, duration: 0.8, ease: 'power1.inOut' }, 7.4)
+      .to('.pieces', { opacity: 1, duration: 0.5 }, 7.9)
+      .to('#p1', { y: 0, rotation: 2, duration: 1.7, ease: M }, 7.3)
+      .to('#p2', { y: 0, rotation: -2, duration: 1.7, ease: M }, 7.6)
+      .to('#p3', { y: 0, rotation: 3, duration: 1.7, ease: M }, 7.9);
 
-  /* Beat 3 hold · 8.7–11.7 — layout static, the macro keeps travelling;
+  /* Beat 3 hold · 9.0–12.2 — layout static, the macro keeps travelling;
      the pieces parallax at different rates, keep rotating slowly, and sparkle at their stones */
-  loop.to(inner('#tileE'), { xPercent: -14, scale: 1.10, duration: 3.0 }, 8.7)
-      .to(inner('#tileD'), { scale: 1.07, duration: 3.0 }, 8.7)
-      .to('#p1', { xPercent: -2.2, rotation: 6, duration: 3.0 }, 8.7)
-      .to('#p2', { xPercent: 1.6, y: -6, rotation: -6, duration: 3.0 }, 8.7)
-      .to('#p3', { xPercent: -1.2, y: -4, rotation: 7, duration: 3.0 }, 8.7)
-      .to('#p1 .spark', { keyframes: [{ opacity: 1, scale: 1.15, duration: 0.45 }, { opacity: 0, scale: 0.7, duration: 0.55 }] }, 9.3)
-      .to('#p2 .spark', { keyframes: [{ opacity: 1, scale: 1.15, duration: 0.45 }, { opacity: 0, scale: 0.7, duration: 0.55 }] }, 10.2)
-      .to('#p3 .spark', { keyframes: [{ opacity: 1, scale: 1.15, duration: 0.45 }, { opacity: 0, scale: 0.7, duration: 0.55 }] }, 11.0);
+  loop.to(inner('#tileE'), { xPercent: -14, scale: 1.10, duration: 3.2 }, 9.0)
+      .to(inner('#tileD'), { scale: 1.07, duration: 3.2 }, 9.0)
+      .to('#p1', { xPercent: -2.2, rotation: 6, duration: 3.2 }, 9.0)
+      .to('#p2', { xPercent: 1.6, y: -6, rotation: -6, duration: 3.2 }, 9.0)
+      .to('#p3', { xPercent: -1.2, y: -4, rotation: 7, duration: 3.2 }, 9.0)
+      .to('#p1 .spark', { keyframes: [{ opacity: 1, scale: 1.15, duration: 0.45 }, { opacity: 0, scale: 0.7, duration: 0.55 }] }, 9.9)
+      .to('#p2 .spark', { keyframes: [{ opacity: 1, scale: 1.15, duration: 0.45 }, { opacity: 0, scale: 0.7, duration: 0.55 }] }, 10.8)
+      .to('#p3 .spark', { keyframes: [{ opacity: 1, scale: 1.15, duration: 0.45 }, { opacity: 0, scale: 0.7, duration: 0.55 }] }, 11.6);
 
-  /* Return · 11.7–14.2 — beat-1 tiles fade back UNDERNEATH while D and E shrink home,
-     every inner returns to its loop-start value so the seam is invisible */
-  loop.to(['#tileA', '#tileB', '#tileC', '#tileT'], { opacity: 1, duration: 0.6, ease: 'power1.out' }, 11.7)
-      /* pieces leave first, the photo returns underneath */
-      .to('.pieces', { opacity: 0, duration: 0.6, ease: 'power1.in' }, 11.7)
-      .to('#tileD .inner2', { opacity: 0, duration: 0.9, ease: 'power1.out' }, 12.2)
-      .to('#tileD .inner:not(.inner2)', { opacity: 1, duration: 0.9, ease: 'power1.out' }, 12.2)
-      .to('#p1', { y: 30, xPercent: 0, rotation: -4, duration: 2.5, ease: M }, 11.7)
-      .to('#p2', { y: 30, xPercent: 0, rotation: 3, duration: 2.5, ease: M }, 11.7)
-      .to('#p3', { y: 30, xPercent: 0, rotation: -3, duration: 2.5, ease: M }, 11.7)
-      .to('.t-line', { opacity: 0, y: 14, duration: 0.3 }, 11.7)
-      .to('#tileT', { clipPath: 'inset(0 0 100% 0)', y: 14, duration: 0.7, ease: M }, 11.9)
-      .to('#tileT', { opacity: 0, duration: 0.3 }, 12.35)
-      .to('#tileA', { height: '100%', duration: 2.5, ease: M }, 11.7)
-      .to('#tileC', { top: '0%', height: '100%', duration: 2.5, ease: M }, 11.7)
-      .to('#tileD', { left: '69%', width: '31%', height: '44%', duration: 2.5, ease: M }, 11.7)
-      .to('#tileE', { left: '69%', top: '52%', width: '31%', height: '48%', duration: 2.5, ease: M }, 11.7)
-      .to(inner('#tileA'), { xPercent: 0, yPercent: 0, scale: 1, duration: 2.5, ease: M }, 11.7)
-      .to(inner('#tileC'), { xPercent: 0, scale: 1, duration: 2.5, ease: M }, 11.7)
-      .to(inner('#tileD'), { scale: 1, duration: 2.5, ease: M }, 11.7)
-      .to('#tileD', { opacity: 0, scale: 0.96, duration: 0.4, ease: 'power1.in' }, 13.8)
-      .to('#tileE', { opacity: 0, duration: 0.4, ease: 'power1.in' }, 13.8);
+  /* Return phase 1 · 12.2–14.1 — beat 3 → beat 2, ONE clock, the exact reverse
+     grammar: D and E shrink home while A and B REGROW from the gutter line
+     underneath them (revealed as the rows vacate, never faded in), and C grows
+     back over E. The pieces leave first; the velvet dissolves back to the
+     split photo inside D. */
+  loop.to('.pieces', { opacity: 0, duration: 0.5, ease: 'power1.in' }, 12.2)
+      .to('#tileD .inner2', { opacity: 0, duration: 0.8, ease: 'power1.inOut' }, 12.2)
+      .to('#tileD .inner:not(.inner2)', { opacity: 1, duration: 0.8, ease: 'power1.inOut' }, 12.2)
+      .to('#p1', { y: 30, xPercent: 0, rotation: -4, duration: 1.9, ease: M }, 12.2)
+      .to('#p2', { y: 30, xPercent: 0, rotation: 3, duration: 1.9, ease: M }, 12.2)
+      .to('#p3', { y: 30, xPercent: 0, rotation: -3, duration: 1.9, ease: M }, 12.2)
+      .to('#tileD', { left: '69%', width: '31%', height: '44%', duration: 1.9, ease: M }, 12.2)
+      .to('#tileE', { left: '69%', top: '52%', width: '31%', height: '48%', duration: 1.9, ease: M }, 12.2)
+      .to('#tileC', { width: '31%', duration: 1.9, ease: M }, 12.2)
+      .to('#tileB', { top: '0%', height: '100%', duration: 1.9, ease: M }, 12.2)
+      .to('#tileA', { height: '58%', duration: 1.9, ease: M }, 12.2)
+      .to(inner('#tileD'), { scale: 1, duration: 1.9, ease: M }, 12.2)
+      .to(inner('#tileB'), { scale: 1, duration: 1.9, ease: M }, 12.2)
+      .to('#tileT', { opacity: 1, duration: 0.25 }, 13.25)
+      .fromTo('#tileT', { clipPath: 'inset(0 0 100% 0)' }, { clipPath: 'inset(0 0 0% 0)', duration: 0.85, ease: M, immediateRender: false }, 13.25)
+      .to('#tileT', { y: 0, duration: 0.85, ease: M }, 13.25)
+      .to('.t-line', { opacity: 1, y: 0, duration: 0.7, stagger: 0.1, ease: 'power2.out' }, 13.35)
+
+  /* Return phase 2 · 14.1–16.3 — beat 2 → beat 1, ONE clock: the split closes
+     in lockstep (D's bottom edge and C's top edge meet), A regrows to full
+     height, the text card leaves, and every inner returns to its loop-start
+     value so the seam is invisible. End state == start state. */
+      .to('.t-line', { opacity: 0, y: 14, duration: 0.3 }, 14.1)
+      .to('#tileT', { clipPath: 'inset(0 0 100% 0)', y: 14, duration: 0.7, ease: M }, 14.1)
+      .to('#tileT', { opacity: 0, duration: 0.3 }, 14.55)
+      .to('#tileA', { height: '100%', duration: 2.2, ease: M }, 14.1)
+      .to('#tileC', { top: '0%', height: '100%', duration: 2.2, ease: M }, 14.1)
+      .to('#tileD', { height: '0%', duration: 2.2, ease: M }, 14.1)
+      .to(inner('#tileA'), { xPercent: 0, yPercent: 0, scale: 1, duration: 2.2, ease: M }, 14.1)
+      .to(inner('#tileC'), { xPercent: 0, scale: 1, duration: 2.2, ease: M }, 14.1);
 
   /* ---------- entrance: quick, no black hold, then the loop takes over ---------- */
   var intro = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: function(){ loop.play(); } });
