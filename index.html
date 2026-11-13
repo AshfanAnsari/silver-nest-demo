@@ -1590,9 +1590,10 @@ function pushTransition(stage, fromState, toState) {
       }
     });
 
-    // Boot: land instantly on the staging state (State 00) — no first-frame sweep across the stage.
-    // The engine's own timer then advances to State 01 after State 00's full duration.
-    applyChoreographyState(0, false, true);
+    // Boot: land instantly on State 01 (the Trinity mosaic) — the site must open on the full
+    // three-column hero, never on State 00's near-empty staging frame (seed tile alone on black).
+    // State 00 remains only as State 01's pre-stage inside the engine and via its state pill.
+    applyChoreographyState(1, false, true);
   </script>
 </body>
 </html>
