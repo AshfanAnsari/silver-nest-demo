@@ -345,6 +345,14 @@
   .ld-rule{display:block;width:44px;height:1px;background:linear-gradient(90deg,transparent,#caa64f)}
   .ld-rule.r{background:linear-gradient(90deg,#caa64f,transparent)}
 
+  /* ---------- phone-first pass (site is used mainly on phones) ---------- */
+  a, button{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+  @media(max-width:760px){
+    .navbar .nb-search{width:42px;height:42px}
+    .view-btn{padding:14px 22px}
+    .ld-word{font-size:10.5vw}
+  }
+
   /* ---------- navbar (FORME reference via @bee_ui.ux, this site's theme) ---------- */
   .navbar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;background:rgba(15,14,12,.94);border:1px solid rgba(242,239,233,.13);border-radius:999px;padding:8px 9px 8px 24px;opacity:0}
   .nb-brand{font-family:'Italiana',serif;font-size:17px;letter-spacing:.15em;color:var(--ink);text-decoration:none;white-space:nowrap}
