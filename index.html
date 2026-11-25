@@ -819,19 +819,25 @@
 
   var driver={ t:0 };
   var loop=gsap.to(driver, { t:19.9, duration:19.9, ease:'none', repeat:-1, paused:true,
-    onUpdate:function(){ render(driver.t); } });
+    onUpdate:function(){ render(driver.t); if (driver.t >= 1.6) dropNav(); } });
   measure();
   render(0);
   window.addEventListener('resize', measure);
 
-  /* ---------- entrance, strictly staged: hero tiles drop in and land,
-     then the wordmark fades, then the navbar drops — no two motions overlap ---------- */
+  /* ---------- entrance, strictly staged: hero tiles settle, the wordmark
+     fades, the loop starts and the hero panels rain down — and only once
+     they have FULLY landed (last panel settles at loop t=1.55) does the
+     navbar drop in ---------- */
   gsap.set('.navbar', { y: -84, opacity: 0 });
   gsap.set('.tiles', { y: -26 });
+  var navDropped = false;
+  function dropNav(){
+    if (navDropped) return; navDropped = true;
+    gsap.to('.navbar', { y: 0, opacity: 1, duration: 0.85, ease: 'expo.out' });
+  }
   var intro = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: function(){ loop.play(); } });
   intro.to('.tiles', { y: 0, opacity: 1, duration: 0.9 })
-       .from(['.chrome-bottom'], { opacity: 0, y: 8, duration: 0.45 })
-       .to('.navbar', { y: 0, opacity: 1, duration: 0.85 }, '+=0.1');
+       .from(['.chrome-bottom'], { opacity: 0, y: 8, duration: 0.45 });
 
   /* tap / click toggles pause */
   var userPaused = false;
