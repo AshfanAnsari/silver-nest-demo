@@ -338,6 +338,21 @@
     .ld-word{font-size:10.5vw}
   }
 
+  /* ---------- loader: her symbol, Cup2Eat-style intro, in her box's light golden ---------- */
+  #loader{position:fixed;inset:0;z-index:200;background:#c8ae84;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  body.static #loader{display:none}
+  .ld-lock{text-align:center;padding:0 20px}
+  .ld-sym{position:relative;display:inline-block}
+  .ld-s{font-family:'Great Vibes',cursive;font-size:clamp(120px,17vw,180px);line-height:.9;background:linear-gradient(100deg,#7c5a1e,#a37f2c 35%,#e0c078 50%,#a37f2c 65%,#7c5a1e);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ld-sprig{position:absolute;left:70%;top:0;width:clamp(150px,22vw,225px);overflow:visible}
+  .ld-sprig path{stroke:#8a6420;fill:none;stroke-width:2;stroke-linecap:round}
+  .ld-word{font-family:'Italiana',serif;font-size:clamp(38px,7.2vw,80px);letter-spacing:.14em;line-height:1.1;margin-top:2px;white-space:nowrap}
+  .ld-word .L{display:inline-block;background:linear-gradient(100deg,#7c5a1e,#a37f2c 35%,#e0c078 50%,#a37f2c 65%,#7c5a1e);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ld-by{font-family:'Great Vibes',cursive;font-size:clamp(36px,5.2vw,54px);line-height:1;color:#7c5a1e;transform:rotate(-3deg);margin-top:0}
+  .ld-tag{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:18px;font-size:10.5px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:#6d5836}
+  .ld-rule{display:block;width:44px;height:1px;background:linear-gradient(90deg,transparent,#8a6420)}
+  .ld-rule.r{background:linear-gradient(90deg,#8a6420,transparent)}
+
   /* ---------- navbar (FORME reference via @bee_ui.ux, this site's theme) ---------- */
   .navbar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;background:rgba(15,14,12,.94);border:1px solid rgba(242,239,233,.13);border-radius:999px;padding:8px 9px 8px 24px;opacity:0}
   .nb-brand{font-family:'Italiana',serif;font-size:17px;letter-spacing:.15em;color:var(--ink);text-decoration:none;white-space:nowrap}
