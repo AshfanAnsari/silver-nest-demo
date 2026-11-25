@@ -258,12 +258,27 @@
   .prod.flash{box-shadow:0 0 0 2px var(--ink),0 0 0 6px rgba(242,239,233,.22)}
   .prod .ph{position:relative}
   .badge{position:absolute;left:12px;top:12px;z-index:3;font-size:10px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:7px 11px;border-radius:999px}
-  .badge.low{background:#e8c97a;color:#191713}
-  .badge.oos{background:rgba(12,12,10,.86);color:#b9b0a1;border:1px solid rgba(242,239,233,.2)}
+  .badge.low{display:inline-flex;align-items:center;gap:7px;background:#eec95e;color:#171204;font-size:11px;font-weight:800;letter-spacing:.13em;padding:10px 15px;box-shadow:0 8px 22px rgba(0,0,0,.5)}
+  .badge.low::before{content:"";width:7px;height:7px;border-radius:50%;background:#8a5a00;animation:pulseDot 1.6s ease-in-out infinite}
+  @keyframes pulseDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.55);opacity:.5}}
+  @media (prefers-reduced-motion: reduce){.badge.low::before{animation:none}}
+  article[data-stock="low"] .ph::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 2px rgba(238,201,94,.9);pointer-events:none;z-index:2}
+  article[data-stock="oos"] .badge{display:none}
+  article[data-stock="oos"] .ph::after{content:"OUT OF STOCK";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(7,7,6,.55);color:#f2efe9;font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(20px,2.2vw,31px);letter-spacing:.32em;text-indent:.32em;text-align:center;padding:0 10px;line-height:1.6;z-index:2}
+  @media(max-width:760px){article[data-stock="oos"] .ph::after{font-size:16.5px;letter-spacing:.2em;text-indent:.2em}}
+  .sm-row .mt .low,.sm-row .mt .oos{font-weight:700}
   article[data-stock="oos"] .ph img{filter:saturate(.5) brightness(.78)}
   .band{position:relative;background:#0c130f}
   .band .band-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(30px) brightness(.5);transform:scale(1.18)}
   .band .band-fg{position:relative;width:100%;height:100%;object-fit:contain}
+
+  /* ---------- footer (Perfect Portfolio pattern, this site's theme) ---------- */
+  .foot{padding:54px var(--pad) 66px;text-align:center}
+  .foot-copy{color:var(--muted);font-size:13.5px}
+  .foot-links{margin-top:11px;color:var(--muted);font-size:13.5px}
+  .foot-links a{color:var(--muted);text-decoration:none;transition:color .3s ease}
+  .foot-links a:hover{color:var(--ink)}
+  .foot-links .dot{margin:0 12px;opacity:.55}
 
   /* ---------- talk to Saba ---------- */
   .talk-fab{position:fixed;right:18px;bottom:18px;z-index:60;background:var(--ink);color:#111110;border-radius:999px;padding:13px 20px;display:flex;gap:9px;align-items:center;font-family:'Manrope',sans-serif;font-weight:700;font-size:13.5px;letter-spacing:.02em;text-decoration:none;box-shadow:0 14px 34px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.22,1,.36,1),opacity .45s ease}
@@ -443,9 +458,8 @@
   </section>
 </main>
 <footer class="foot">
-  <div class="wm">NOOR MAISON BY SABA</div>
-  <p>Pieces made to be worn, loved and kept.</p>
-  <div class="fine">© 2026 Noor Maison by Saba</div>
+  <p class="foot-copy">© 2026 Noor Maison by Saba</p>
+  <p class="foot-links"><a href="https://www.instagram.com/noormaison_by_saba" target="_blank" rel="noopener">Instagram @noormaison_by_saba</a><span class="dot" aria-hidden="true">·</span><a href="#collection">The Collection</a><span class="dot" aria-hidden="true">·</span><a href="#order">How to Order</a><span class="dot" aria-hidden="true">·</span><a href="https://ig.me/m/noormaison_by_saba" target="_blank" rel="noopener">Talk to Saba</a></p>
 </footer>
 
 <script>
