@@ -293,7 +293,7 @@
   .foot-links .dot{margin:0 12px;opacity:.55}
 
   /* ---------- navbar (FORME reference via @bee_ui.ux, this site's theme) ---------- */
-  .navbar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;background:rgba(15,14,12,.94);border:1px solid rgba(242,239,233,.13);border-radius:999px;padding:8px 9px 8px 24px}
+  .navbar{width:100%;display:flex;align-items:center;justify-content:space-between;gap:18px;background:rgba(15,14,12,.94);border:1px solid rgba(242,239,233,.13);border-radius:999px;padding:8px 9px 8px 24px;opacity:0}
   .nb-brand{font-family:'Italiana',serif;font-size:17px;letter-spacing:.15em;color:var(--ink);text-decoration:none;white-space:nowrap}
   .nb-links{display:flex;gap:32px}
   .nb-links a{font-size:13px;font-weight:500;letter-spacing:.03em;color:var(--muted);text-decoration:none;transition:color .3s ease}
@@ -694,9 +694,13 @@
   render(0);
   window.addEventListener('resize', measure);
 
-  /* ---------- entrance: chrome fades in, the loop takes over ---------- */
-  var intro = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: function(){ loop.play(); } });
-  intro.from(['.chrome-top', '.chrome-bottom'], { opacity: 0, y: 8, duration: 0.55 })
+  /* ---------- entrance: hero settles first, then the navbar drops in ---------- */
+  gsap.set('.navbar', { y: -84, opacity: 0 });
+  var intro = gsap.timeline({ defaults: { ease: 'expo.out' }, onComplete: function(){
+    loop.play();
+    gsap.to('.navbar', { y: 0, opacity: 1, duration: 0.85, ease: 'expo.out' });
+  } });
+  intro.from(['.chrome-bottom'], { opacity: 0, y: 8, duration: 0.55 })
        .from(['.proof-ui', '.play-hint'], { opacity: 0, duration: 0.45 }, '-=0.25');
 
   /* tap / click toggles pause */
